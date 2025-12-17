@@ -9,7 +9,9 @@ let obj = JSON.parse($response.body);
 
 if (url.includes("/v1/interaction/comment/video/download")) {
   // 评论区实况照片保存请求
-  let commitsCache = JSON.parse($persistentStore.read("redBookCommentLivePhoto")); // 读取持久化存储
+  let commitsCache = JSON.parse(
+    $persistentStore.read("redBookCommentLivePhoto")
+  ); // 读取持久化存储
   if (commitsCache) {
     let commitsRsp = commitsCache;
     if (commitsRsp?.livePhotos?.length > 0 && obj?.data?.video) {
@@ -21,7 +23,10 @@ if (url.includes("/v1/interaction/comment/video/download")) {
       }
     }
   }
-} else if (url.includes("/v1/note/imagefeed") || url.includes("/v2/note/feed")) {
+} else if (
+  url.includes("/v1/note/imagefeed") ||
+  url.includes("/v2/note/feed")
+) {
   // 信息流 图片
   let newDatas = [];
   if (obj?.data?.[0]?.note_list?.length > 0) {
@@ -36,10 +41,15 @@ if (url.includes("/v1/interaction/comment/video/download")) {
         // 视频下载限制
         const additem = { type: "video_download" };
         // 检查是否存在 video_download 并获取其索引
-        let videoDownloadIndex = item.share_info.function_entries.findIndex((i) => i?.type === "video_download");
+        let videoDownloadIndex = item.share_info.function_entries.findIndex(
+          (i) => i?.type === "video_download"
+        );
         if (videoDownloadIndex !== -1) {
           // 如果存在，将其移动到数组的第一个位置
-          let videoDownloadEntry = item.share_info.function_entries.splice(videoDownloadIndex, 1)[0];
+          let videoDownloadEntry = item.share_info.function_entries.splice(
+            videoDownloadIndex,
+            1
+          )[0];
           item.share_info.function_entries.splice(0, 0, videoDownloadEntry);
         } else {
           // 如果不存在，在数组开头添加一个新的 video_download 对象
@@ -48,7 +58,10 @@ if (url.includes("/v1/interaction/comment/video/download")) {
       }
       if (item?.images_list?.length > 0) {
         for (let i of item.images_list) {
-          if (i.hasOwnProperty("live_photo_file_id") && i.hasOwnProperty("live_photo")) {
+          if (
+            i.hasOwnProperty("live_photo_file_id") &&
+            i.hasOwnProperty("live_photo")
+          ) {
             if (
               i?.live_photo_file_id &&
               i?.live_photo?.media?.video_id &&
@@ -57,12 +70,15 @@ if (url.includes("/v1/interaction/comment/video/download")) {
               let myData = {
                 file_id: i.live_photo_file_id,
                 video_id: i.live_photo.media.video_id,
-                url: i.live_photo.media.stream.h265[0].master_url
+                url: i.live_photo.media.stream.h265[0].master_url,
               };
               newDatas.push(myData);
             }
             // 写入持久化存储
-            $persistentStore.write(JSON.stringify(newDatas), "redBookLivePhoto");
+            $persistentStore.write(
+              JSON.stringify(newDatas),
+              "redBookLivePhoto"
+            );
           }
         }
       }
@@ -91,8 +107,11 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   if (obj?.data?.sideConfigHomepage?.componentConfig?.sidebar_config_cny_2025) {
     obj.data.sideConfigHomepage.componentConfig.sidebar_config_cny_2025 = {};
   }
-  if (obj?.data?.sideConfigPersonalPage?.componentConfig?.sidebar_config_cny_2025) {
-    obj.data.sideConfigPersonalPage.componentConfig.sidebar_config_cny_2025 = {};
+  if (
+    obj?.data?.sideConfigPersonalPage?.componentConfig?.sidebar_config_cny_2025
+  ) {
+    obj.data.sideConfigPersonalPage.componentConfig.sidebar_config_cny_2025 =
+      {};
   }
 } else if (url.includes("/v1/system_service/config")) {
   // 整体配置
@@ -104,7 +123,14 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   }
 } else if (url.includes("/v2/note/widgets")) {
   // 详情页小部件
-  const item = ["cooperate_binds", "generic", "note_next_step", "widgets_nbb", "widgets_ncb", "widgets_ndb"];
+  const item = [
+    "cooperate_binds",
+    "generic",
+    "note_next_step",
+    "widgets_nbb",
+    "widgets_ncb",
+    "widgets_ndb",
+  ];
   // cooperate_binds合作品牌 note_next_step活动 widgets_nbb相关搜索
   if (obj?.data) {
     for (let i of item) {
@@ -129,7 +155,9 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   // 关注页信息流 可能感兴趣的人
   if (obj?.data?.items?.length > 0) {
     // 白名单
-    obj.data.items = obj.data.items.filter((i) => i?.recommend_reason === "friend_post");
+    obj.data.items = obj.data.items.filter(
+      (i) => i?.recommend_reason === "friend_post"
+    );
   }
 } else if (url.includes("/v3/note/videofeed")) {
   // 信息流 视频
@@ -145,10 +173,15 @@ if (url.includes("/v1/interaction/comment/video/download")) {
         // 视频下载限制
         const additem = { type: "video_download" };
         // 检查是否存在 video_download 并获取其索引
-        let videoDownloadIndex = item.share_info.function_entries.findIndex((i) => i?.type === "video_download");
+        let videoDownloadIndex = item.share_info.function_entries.findIndex(
+          (i) => i?.type === "video_download"
+        );
         if (videoDownloadIndex !== -1) {
           // 如果存在，将其移动到数组的第一个位置
-          let videoDownloadEntry = item.share_info.function_entries.splice(videoDownloadIndex, 1)[0];
+          let videoDownloadEntry = item.share_info.function_entries.splice(
+            videoDownloadIndex,
+            1
+          )[0];
           item.share_info.function_entries.splice(0, 0, videoDownloadEntry);
         } else {
           // 如果不存在，在数组开头添加一个新的 video_download 对象
@@ -161,7 +194,9 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   // 关注列表
   if (obj?.data?.items?.length > 0) {
     // recommend_user可能感兴趣的人
-    obj.data.items = obj.data.items.filter((i) => !["recommend_user"]?.includes(i?.recommend_reason));
+    obj.data.items = obj.data.items.filter(
+      (i) => !["recommend_user"]?.includes(i?.recommend_reason)
+    );
   }
 } else if (url.includes("/v4/note/videofeed")) {
   // 信息流 视频
@@ -171,10 +206,13 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   if (obj?.data?.length > 0) {
     for (let item of obj.data) {
       if (item?.model_type === "note") {
-        if (item?.id && item?.video_info_v2?.media?.stream?.h265?.[0]?.master_url) {
+        if (
+          item?.id &&
+          item?.video_info_v2?.media?.stream?.h265?.[0]?.master_url
+        ) {
           let myData = {
             id: item.id,
-            url: item.video_info_v2.media.stream.h265[0].master_url
+            url: item.video_info_v2.media.stream.h265[0].master_url,
           };
           newDatas.push(myData);
         }
@@ -182,10 +220,15 @@ if (url.includes("/v1/interaction/comment/video/download")) {
           // 视频下载限制
           const additem = { type: "video_download" };
           // 检查是否存在 video_download 并获取其索引
-          let videoDownloadIndex = item.share_info.function_entries.findIndex((i) => i?.type === "video_download");
+          let videoDownloadIndex = item.share_info.function_entries.findIndex(
+            (i) => i?.type === "video_download"
+          );
           if (videoDownloadIndex !== -1) {
             // 如果存在，将其移动到数组的第一个位置
-            let videoDownloadEntry = item.share_info.function_entries.splice(videoDownloadIndex, 1)[0];
+            let videoDownloadEntry = item.share_info.function_entries.splice(
+              videoDownloadIndex,
+              1
+            )[0];
             item.share_info.function_entries.splice(0, 0, videoDownloadEntry);
           } else {
             // 如果不存在，在数组开头添加一个新的 video_download 对象
@@ -204,20 +247,28 @@ if (url.includes("/v1/interaction/comment/video/download")) {
     }
     $persistentStore.write(JSON.stringify(newDatas), "redBookVideoFeed"); // 普通视频 写入持久化存储
   }
-  let videoFeedUnlock = JSON.parse($persistentStore.read("redBookVideoFeedUnlock")); // 禁止保存的视频 读取持久化存储
+  let videoFeedUnlock = JSON.parse(
+    $persistentStore.read("redBookVideoFeedUnlock")
+  ); // 禁止保存的视频 读取持久化存储
   if (videoFeedUnlock?.gayhub === "rucu6") {
     if (obj?.data?.length > 0) {
       for (let item of obj.data) {
-        if (item?.id && item?.video_info_v2?.media?.stream?.h265?.[0]?.master_url) {
+        if (
+          item?.id &&
+          item?.video_info_v2?.media?.stream?.h265?.[0]?.master_url
+        ) {
           let myData = {
             id: item.id,
-            url: item.video_info_v2.media.stream.h265[0].master_url
+            url: item.video_info_v2.media.stream.h265[0].master_url,
           };
           unlockDatas.push(myData);
         }
       }
     }
-    $persistentStore.write(JSON.stringify(unlockDatas), "redBookVideoFeedUnlock"); // 禁止保存的视频 写入持久化存储
+    $persistentStore.write(
+      JSON.stringify(unlockDatas),
+      "redBookVideoFeedUnlock"
+    ); // 禁止保存的视频 写入持久化存储
   }
 } else if (url.includes("/v5/note/comment/list")) {
   // 处理评论区实况照片
@@ -241,7 +292,7 @@ if (url.includes("/v1/interaction/comment/video/download")) {
             if (picObj?.stream?.h265?.[0]?.master_url) {
               const videoData = {
                 videId: picture.video_id,
-                videoUrl: picObj.stream.h265[0].master_url
+                videoUrl: picObj.stream.h265[0].master_url,
               };
               livePhotos.push(videoData);
             }
@@ -263,7 +314,7 @@ if (url.includes("/v1/interaction/comment/video/download")) {
                 if (picObj?.stream?.h265?.[0]?.master_url) {
                   const videoData = {
                     videId: picture.video_id,
-                    videoUrl: picObj.stream.h265[0].master_url
+                    videoUrl: picObj.stream.h265[0].master_url,
                   };
                   livePhotos.push(videoData);
                 }
@@ -276,22 +327,32 @@ if (url.includes("/v1/interaction/comment/video/download")) {
   }
   if (livePhotos?.length > 0) {
     let commitsRsp;
-    let commitsCache = JSON.parse($persistentStore.read("redBookCommentLivePhoto")); // 读取持久化存储
+    let commitsCache = JSON.parse(
+      $persistentStore.read("redBookCommentLivePhoto")
+    ); // 读取持久化存储
     if (!commitsCache) {
       commitsRsp = { noteId: note_id, livePhotos: livePhotos };
     } else {
       commitsRsp = commitsCache;
       if (commitsRsp?.noteId === note_id) {
-        commitsRsp.livePhotos = deduplicateLivePhotos(commitsRsp.livePhotos.concat(livePhotos));
+        commitsRsp.livePhotos = deduplicateLivePhotos(
+          commitsRsp.livePhotos.concat(livePhotos)
+        );
       } else {
         commitsRsp = { noteId: note_id, livePhotos: livePhotos };
       }
     }
-    $persistentStore.write(JSON.stringify(commitsRsp), "redBookCommentLivePhoto"); // 评论区实况照片 写入持久化存储
+    $persistentStore.write(
+      JSON.stringify(commitsRsp),
+      "redBookCommentLivePhoto"
+    ); // 评论区实况照片 写入持久化存储
   }
 } else if (url.includes("/v5/recommend/user/follow_recommend")) {
   // 用户详情页 你可能感兴趣的人
-  if (obj?.data?.title === "你可能感兴趣的人" && obj?.data?.rec_users?.length > 0) {
+  if (
+    obj?.data?.title === "你可能感兴趣的人" &&
+    obj?.data?.rec_users?.length > 0
+  ) {
     obj.data = {};
   }
 } else if (url.includes("/v6/homefeed")) {
@@ -314,6 +375,9 @@ if (url.includes("/v1/interaction/comment/video/download")) {
       } else if (item?.note_attributes?.includes("goods")) {
         // 信息流-商品
         continue;
+      } else if (item.type === "video") {
+        // 信息流-视频
+        continue;
       } else if (item.hasOwnProperty("video_info_v2")) {
         // 信息流-视频
         continue;
@@ -329,7 +393,9 @@ if (url.includes("/v1/interaction/comment/video/download")) {
 } else if (url.includes("/v10/note/video/save")) {
   // 视频保存请求
   let videoFeed = JSON.parse($persistentStore.read("redBookVideoFeed")); // 普通视频 读取持久化存储
-  let videoFeedUnlock = JSON.parse($persistentStore.read("redBookVideoFeedUnlock")); // 禁止保存的视频 读取持久化存储
+  let videoFeedUnlock = JSON.parse(
+    $persistentStore.read("redBookVideoFeedUnlock")
+  ); // 禁止保存的视频 读取持久化存储
   if (obj?.data?.note_id && videoFeed?.length > 0) {
     for (let item of videoFeed) {
       if (item.id === obj.data.note_id) {
@@ -351,7 +417,10 @@ if (url.includes("/v1/interaction/comment/video/download")) {
     }
   }
   videoFeedUnlock = { gayhub: "rucu6" };
-  $persistentStore.write(JSON.stringify(videoFeedUnlock), "redBookVideoFeedUnlock");
+  $persistentStore.write(
+    JSON.stringify(videoFeedUnlock),
+    "redBookVideoFeedUnlock"
+  );
 } else if (url.includes("/v10/search/notes")) {
   // 搜索结果
   if (obj?.data?.items?.length > 0) {
