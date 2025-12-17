@@ -314,7 +314,7 @@ if (url.includes("/v1/interaction/comment/video/download")) {
       } else if (item?.note_attributes?.includes("goods")) {
         // 信息流-商品
         continue;
-      } else if (item.model_type === "video") {
+      } else if (item.hasOwnProperty("video_info_v2") {
         // 信息流-视频
         continue;
       } else {
